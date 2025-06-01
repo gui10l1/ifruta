@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { Alert, Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
 import logo from '../../../assets/Logo.png';
 import { useRouter } from 'expo-router';
+import Container from '../../../components/Container';
 
 export default function LoginScreen() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function LoginScreen() {
 
     const data = JSON.stringify({ email, password });
 
-    Alert.alert('Legal!', `Dados enviados:\n\n ${data}`);
+    router.push('/(private)/home');
   }
 
   const handleNavigateToForgotPasswordScreen = () => {
@@ -31,7 +32,7 @@ export default function LoginScreen() {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.keyboardAvoidingView}>
+    <Container>
       <ScrollView style={styles.container}>
         <View style={styles.content}>
           <View style={styles.header}>
@@ -96,7 +97,7 @@ export default function LoginScreen() {
           </View>
         </View>
       </ScrollView>
-    </KeyboardAvoidingView>
+    </Container>
   );
 }
 

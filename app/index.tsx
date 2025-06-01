@@ -1,14 +1,7 @@
-import { useRouter } from "expo-router";
-import { useEffect } from "react";
+import { Redirect, Stack, useRouter } from "expo-router";
 
 export default function AppScreen() {
-    const router = useRouter();
-
-    useEffect(() => {
-        setTimeout(() => {
-            router.navigate('/(public)/login');
-        }, 100);
-    }, []);
-
-    return null;
+    return (
+        <Redirect href="(public)/login" />
+    )
 }
