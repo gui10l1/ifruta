@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Dimensions, ImageBackground, ImageSourcePropType, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import If from "../../../../components/If";
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import Button from "../../../../components/Button";
 import BackButton from "../../../../components/BackButton";
@@ -15,6 +15,7 @@ export default function ProductDetailsScreen() {
   const router = useRouter();
 
   const [product, setProduct] = useState<IProduct | null>(null);
+  const [favorite, setFavorite] = useState(false);
 
   useEffect(() => {
     const product = products.find(p => p.id === Number(productId));
@@ -33,6 +34,10 @@ export default function ProductDetailsScreen() {
 
   const handlePushToSellerProfile = (ownerId: number) => {
     router.push(`/(private)/seller-profile/${ownerId}`)
+  }
+
+  const handleFavoriteButton = () => {
+    setFavorite(!favorite);
   }
 
   return (
@@ -57,8 +62,8 @@ export default function ProductDetailsScreen() {
             <View style={styles.productNameContainer}>
               <Text style={styles.productName}>{product?.name}</Text>
 
-              <TouchableOpacity>
-                <Feather name="heart" size={29} />
+              <TouchableOpacity onPress={handleFavoriteButton}>
+                <MaterialIcons name={favorite ? 'favorite' : 'favorite-border'} size={29} />
               </TouchableOpacity>
             </View>
 

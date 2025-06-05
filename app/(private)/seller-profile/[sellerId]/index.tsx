@@ -1,4 +1,4 @@
-import { Image, ImageSourcePropType, StatusBar, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Image, Linking, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Container from "../../../../components/Container";
 import BackButton from "../../../../components/BackButton";
 
@@ -8,11 +8,17 @@ import If from "../../../../components/If";
 import { Feather } from '@expo/vector-icons';
 import Button from "../../../../components/Button";
 import sellers, { ISeller } from "../../../../constants/sellers";
+import RateBottomSheet from "../../../../components/RateBottomSheet";
+import Constants from 'expo-constants';
 
 export default function SellerProfileScreen() {
   const { sellerId } = useLocalSearchParams();
 
   const [seller, setSeller] = useState<ISeller | null>(null);
+  const [showRatingBottomSheet, setShowRatingBottomSheet] = useState(false);
+
+  const [loadingEmail, setLoadingEmail] = useState(false);
+  const [loadingPhone, setLoadingPhone] = useState(false);
 
   useEffect(() => {
     const seller = sellers.find(s => s.id === Number(sellerId));
@@ -20,48 +26,89 @@ export default function SellerProfileScreen() {
     setSeller(seller || null);
   }, [sellerId]);
 
+  const handleShowBottomSheet = () => {
+    setShowRatingBottomSheet(true);
+  }
+
+  const openLink = async (link: string) => {
+    await Linking.openURL(link);
+  }
+
+  const handleEmailPress = async () => {
+    setLoadingEmail(true);
+
+    await openLink(`mailto:${seller?.email}`)
+
+    setLoadingEmail(false);
+  }
+
+  const handlePhonePress = async () => {
+    setLoadingPhone(true);
+
+    await openLink(`tel:${seller?.phone}`)
+
+    setLoadingPhone(false);
+  }
+
   return (
-    <Container style={styles.container}>
-      <StatusBar barStyle="dark-content" />
+    <Container style={{ paddingTop: 0 }}>
+      <View style={styles.container}>
+        <StatusBar barStyle="dark-content" />
 
-      <BackButton color="#000" />
+        <BackButton color="#000" />
 
-      <If
-        condition={Boolean(seller)}
-        otherwise={<Text>Não foi possível encontrar este vendedor!</Text>}
-      >
-        <View style={styles.header}>
-          <Image
-            source={seller?.image}
-            style={styles.sellerImage}
-          />
+        <If
+          condition={Boolean(seller)}
+          otherwise={<Text>Não foi possível encontrar este vendedor!</Text>}
+        >
+          <View style={styles.header}>
+            <Image
+              source={seller?.image}
+              style={styles.sellerImage}
+            />
 
-          <Text style={styles.sellerName}>{seller?.name}</Text>
-        </View>
-
-        <View style={styles.infoContainer}>
-          <View style={styles.infoSection}>
-            <Feather name="phone" size={22} />
-            <Text style={styles.info}>{seller?.phone}</Text>
+            <Text style={styles.sellerName}>{seller?.name}</Text>
           </View>
 
-          <View style={styles.infoSection}>
-            <Feather name="mail" size={22} />
-            <Text style={styles.info}>{seller?.email}</Text>
+          <View style={styles.infoContainer}>
+            <TouchableOpacity
+              onPress={handlePhonePress}
+              style={styles.infoSection}
+            >
+              <If condition={!loadingPhone} otherwise={<ActivityIndicator size="small" color="#000" />}>
+                <Feather name="phone" size={22} />
+                <Text style={styles.info}>{seller?.phone}</Text>
+              </If>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={handleEmailPress}
+              style={styles.infoSection}
+            >
+              <If condition={!loadingEmail} otherwise={<ActivityIndicator size="small" color="#000" />}>
+                <Feather name="mail" size={22} />
+                <Text style={styles.info}>{seller?.email}</Text>
+              </If>
+            </TouchableOpacity>
           </View>
-        </View>
 
-        <View style={styles.ratingContainer}>
-          <Text style={styles.rating}>4.6</Text>
-          <Text style={styles.reviewsText}>Reviews</Text>
-        </View>
+          <View style={styles.ratingContainer}>
+            <Text style={styles.rating}>4.6</Text>
+            <Text style={styles.reviewsText}>Reviews</Text>
+          </View>
 
-        <View style={styles.buttonContainer}>
-          <Button style={styles.button}>
-            Rate
-          </Button>
-        </View>
-      </If>
+          <View style={styles.buttonContainer}>
+            <Button style={styles.button} onPress={handleShowBottomSheet}>
+              Rate
+            </Button>
+          </View>
+        </If>
+      </View>
+
+      <RateBottomSheet
+        shown={showRatingBottomSheet}
+        onClose={() => setShowRatingBottomSheet(false)}
+      />
     </Container>
   );
 }
@@ -69,6 +116,7 @@ export default function SellerProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
+    paddingTop: Constants.statusBarHeight
   },
   header: {
     flexDirection: 'row',

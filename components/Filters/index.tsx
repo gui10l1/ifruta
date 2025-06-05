@@ -9,7 +9,7 @@ import Slider from 'rn-range-slider';
 
 const POINTS = [Dimensions.get('screen').height * .7];
 
-function Backdrop({ style }: { style: StyleProp<ViewStyle> }) {
+export function Backdrop({ style }: { style: StyleProp<ViewStyle> }) {
   return <View style={[style, styles.backdrop]} />
 }
 
@@ -51,12 +51,6 @@ const Thumb = ({ value }: IThumb) => {
 
 const RailSelected = () => {
   return <View style={{ flex: 1, backgroundColor: '#f00', height: 2 }} />
-}
-
-const Label = (label: number) => {
-  return (
-    <Text style={{  }}>{label}</Text>
-  );
 }
 
 export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBottomSheetFilters) {
@@ -152,7 +146,6 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
       ref={bottomSheetRef}
       index={-1}
       snapPoints={POINTS}
-      enablePanDownToClose
       onClose={onClose}
       backdropComponent={({ style }) => shown ? <Backdrop style={style} /> : null}
       handleStyle={{ borderRadius: 100 }}
