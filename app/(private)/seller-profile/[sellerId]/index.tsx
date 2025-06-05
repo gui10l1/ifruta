@@ -2,46 +2,12 @@ import { Image, ImageSourcePropType, StatusBar, StyleSheet, Text, View } from "r
 import Container from "../../../../components/Container";
 import BackButton from "../../../../components/BackButton";
 
-import sellerOne from '../../../../assets/diadia.png';
-import sellerTwo from '../../../../assets/assai.png';
-import sellerThree from '../../../../assets/super-adega.png';
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import If from "../../../../components/If";
 import { Feather } from '@expo/vector-icons';
 import Button from "../../../../components/Button";
-
-interface ISeller {
-  id: number;
-  image: ImageSourcePropType;
-  name: string;
-  email: string;
-  phone: string;
-}
-
-const sellers: ISeller[] = [
-  {
-    id: 1,
-    name: 'Atacadão Dia a Dia',
-    image: sellerOne,
-    email: 'contato@diaadia.com.br',
-    phone: '(61) 98888-4444',
-  },
-  {
-    id: 2,
-    name: 'Assaí Atacadista',
-    image: sellerTwo,
-    email: 'contato@assai.com.br',
-    phone: '(61) 98888-3333',
-  },
-  {
-    id: 3,
-    name: 'Atacadista Super Adega',
-    image: sellerThree,
-    email: 'contato@superadega.com.br',
-    phone: '(61) 98888-1111',
-  },
-]
+import sellers, { ISeller } from "../../../../constants/sellers";
 
 export default function SellerProfileScreen() {
   const { sellerId } = useLocalSearchParams();
