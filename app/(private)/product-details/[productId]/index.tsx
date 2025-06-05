@@ -12,6 +12,7 @@ import If from "../../../../components/If";
 import { Feather } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import Button from "../../../../components/Button";
+import BackButton from "../../../../components/BackButton";
 
 interface IProduct {
   id: number;
@@ -20,6 +21,7 @@ interface IProduct {
   owner: string;
   price: number;
   image: ImageSourcePropType;
+  ownerId: number;
 }
 
 const products: IProduct[] = [
@@ -30,38 +32,43 @@ const products: IProduct[] = [
     owner: 'Atacadão Dia a Dia',
     price: 10,
     image: oranges,
+    ownerId: 1,
   },
   {
     id: 2,
     name: 'Carrots',
     description: 'Crunchy, orange root vegetables with a mildly sweet flavor. Rich in beta-carotene, which the body converts to vitamin A.',
-    owner: 'Tatico',
+    owner: 'Assaí Atacadista',
     price: 6,
     image: carrot,
+    ownerId: 2,
   },
   {
     id: 3,
     name: 'Cuke',
     description: 'Short for "cucumber." A green-skinned vegetable with a mild taste and high water content. Often eaten raw in salads or pickled.',
-    owner: 'Primor',
+    owner: 'Atacadista Super Adega',
     price: 5,
     image: cuke,
+    ownerId: 3,
   },
   {
     id: 4,
     name: 'Tomatoes',
     description: 'Red (sometimes yellow or green) fruits with a juicy texture and slightly tangy flavor. Widely used fresh or cooked in many dishes.',
-    owner: 'Comper',
+    owner: 'Assaí Atacadista',
     price: 7,
     image: tomatoes,
+    ownerId: 2,
   },
   {
     id: 5,
     name: 'Leafs',
     description: 'A general term for vegetables like lettuce, spinach, or kale. Packed with fiber, vitamins, and minerals; often eaten raw in salads.',
-    owner: 'Soberano',
+    owner: 'Atacadão Dia a Dia',
     price: 3.5,
     image: leafs,
+    ownerId: 1,
   },
 ]
 
@@ -82,8 +89,10 @@ export default function ProductDetailsScreen() {
     style: 'currency',
   }).format;
 
-  const handlePushBack = () => {
-    router.back();
+  
+
+  const handlePushToSellerProfile = (ownerId: number) => {
+    router.push(`/(private)/seller-profile/${ownerId}`)
   }
 
   return (
@@ -101,9 +110,7 @@ export default function ProductDetailsScreen() {
           >
             <View style={styles.backdrop} />
 
-            <TouchableOpacity onPress={handlePushBack}>
-              <Feather name="chevron-left" size={32} color="#fff" />
-            </TouchableOpacity>
+            <BackButton />
           </ImageBackground>
 
           <View style={styles.content}>
@@ -120,7 +127,11 @@ export default function ProductDetailsScreen() {
 
               <Text style={styles.description}>{product?.description}</Text>
 
-              <Text style={styles.productOwner}>{product?.owner}</Text>
+              <TouchableOpacity
+                onPress={() => product?.ownerId && handlePushToSellerProfile(product.ownerId)}
+              >
+                <Text style={styles.productOwner}>{product?.owner}</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.priceContainer}>
