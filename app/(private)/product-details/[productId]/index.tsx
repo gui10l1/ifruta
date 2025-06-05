@@ -1,75 +1,21 @@
 import Container from "../../../../components/Container";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
-import oranges from '../../../../assets/pCjw_ygKCv0.png';
-import carrot from '../../../../assets/ZgDHMMd72I8.png';
-import cuke from '../../../../assets/Za9HGBK5ALA.png';
-import tomatoes from '../../../../assets/idealbookshelfcp524-wgbhamericanexperience-bannedbooks-2000web 1.png';
-import leafs from '../../../../assets/vegetable-salad-spinach-leaf-hd-png-11653148602v7y8oymh2y 3.png';
 import { useEffect, useState } from "react";
 import { Dimensions, ImageBackground, ImageSourcePropType, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import If from "../../../../components/If";
-import { Feather } from '@expo/vector-icons';
+import { Feather, MaterialIcons } from '@expo/vector-icons';
 import Constants from 'expo-constants';
 import Button from "../../../../components/Button";
-
-interface IProduct {
-  id: number;
-  name: string;
-  description: string;
-  owner: string;
-  price: number;
-  image: ImageSourcePropType;
-}
-
-const products: IProduct[] = [
-  {
-    id: 1,
-    name: 'Oranges',
-    description: 'Juicy, sweet citrus fruits with a bright orange peel. High in vitamin C and commonly eaten fresh or as juice.',
-    owner: 'Atacadão Dia a Dia',
-    price: 10,
-    image: oranges,
-  },
-  {
-    id: 2,
-    name: 'Carrots',
-    description: 'Crunchy, orange root vegetables with a mildly sweet flavor. Rich in beta-carotene, which the body converts to vitamin A.',
-    owner: 'Tatico',
-    price: 6,
-    image: carrot,
-  },
-  {
-    id: 3,
-    name: 'Cuke',
-    description: 'Short for "cucumber." A green-skinned vegetable with a mild taste and high water content. Often eaten raw in salads or pickled.',
-    owner: 'Primor',
-    price: 5,
-    image: cuke,
-  },
-  {
-    id: 4,
-    name: 'Tomatoes',
-    description: 'Red (sometimes yellow or green) fruits with a juicy texture and slightly tangy flavor. Widely used fresh or cooked in many dishes.',
-    owner: 'Comper',
-    price: 7,
-    image: tomatoes,
-  },
-  {
-    id: 5,
-    name: 'Leafs',
-    description: 'A general term for vegetables like lettuce, spinach, or kale. Packed with fiber, vitamins, and minerals; often eaten raw in salads.',
-    owner: 'Soberano',
-    price: 3.5,
-    image: leafs,
-  },
-]
+import BackButton from "../../../../components/BackButton";
+import products, { IProduct } from "../../../../constants/products";
 
 export default function ProductDetailsScreen() {
   const { productId } = useLocalSearchParams();
   const router = useRouter();
 
   const [product, setProduct] = useState<IProduct | null>(null);
+  const [favorite, setFavorite] = useState(false);
 
   useEffect(() => {
     const product = products.find(p => p.id === Number(productId));
@@ -82,8 +28,16 @@ export default function ProductDetailsScreen() {
     style: 'currency',
   }).format;
 
-  const handlePushBack = () => {
-    router.back();
+  const handlePushToContact = (sellerId: number) => {
+    router.push(`/(private)/chat/${sellerId}`);
+  }
+
+  const handlePushToSellerProfile = (ownerId: number) => {
+    router.push(`/(private)/seller-profile/${ownerId}`)
+  }
+
+  const handleFavoriteButton = () => {
+    setFavorite(!favorite);
   }
 
   return (
@@ -101,17 +55,15 @@ export default function ProductDetailsScreen() {
           >
             <View style={styles.backdrop} />
 
-            <TouchableOpacity onPress={handlePushBack}>
-              <Feather name="chevron-left" size={32} color="#fff" />
-            </TouchableOpacity>
+            <BackButton />
           </ImageBackground>
 
           <View style={styles.content}>
             <View style={styles.productNameContainer}>
               <Text style={styles.productName}>{product?.name}</Text>
 
-              <TouchableOpacity>
-                <Feather name="heart" size={29} />
+              <TouchableOpacity onPress={handleFavoriteButton}>
+                <MaterialIcons name={favorite ? 'favorite' : 'favorite-border'} size={29} />
               </TouchableOpacity>
             </View>
 
@@ -120,7 +72,11 @@ export default function ProductDetailsScreen() {
 
               <Text style={styles.description}>{product?.description}</Text>
 
-              <Text style={styles.productOwner}>{product?.owner}</Text>
+              <TouchableOpacity
+                onPress={() => product?.ownerId && handlePushToSellerProfile(product.ownerId)}
+              >
+                <Text style={styles.productOwner}>{product?.owner}</Text>
+              </TouchableOpacity>
             </View>
 
             <View style={styles.priceContainer}>
@@ -129,7 +85,7 @@ export default function ProductDetailsScreen() {
                 <Text style={styles.price}>{numberFormat(product?.price || 0)}</Text>
               </View>
 
-              <Button style={styles.button}>Contact seller</Button>
+              <Button style={styles.button} onPress={() => product?.ownerId && handlePushToContact(product?.ownerId)}>Contact seller</Button>
             </View>
           </View>
         </ScrollView>
