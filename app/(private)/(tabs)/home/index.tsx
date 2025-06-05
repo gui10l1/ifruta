@@ -11,12 +11,21 @@ import tomatoes from '../../../../assets/idealbookshelfcp524-wgbhamericanexperie
 import leafs from '../../../../assets/vegetable-salad-spinach-leaf-hd-png-11653148602v7y8oymh2y 3.png';
 import cuke from '../../../../assets/Za9HGBK5ALA.png';
 import carrot from '../../../../assets/ZgDHMMd72I8.png';
+import BottomSheetFilters from "../../../../components/Filters";
+import { useState } from "react";
+import Constants from 'expo-constants';
 
 export default function HomeScreen() {
+  const [bottomSheetShown, setBottomSheetShown] = useState(false);
+
+  const handleShowBottomSheet = () => setBottomSheetShown(true);
+
+  const onBottomSheetClose = () => setBottomSheetShown(false);
+
   return (
-    <Container>
+    <Container style={{ paddingTop: 0 }}>
       <ScrollView style={styles.container}>
-          <View style={styles.header}>
+        <View style={styles.header}>
           <TouchableOpacity style={styles.headerButton}>
             <Image source={userIcon} />
           </TouchableOpacity>
@@ -28,7 +37,10 @@ export default function HomeScreen() {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.filterButton}>
+        <TouchableOpacity
+          style={styles.filterButton}
+          onPress={handleShowBottomSheet}
+        >
           <Image source={filterIcon} />
         </TouchableOpacity>
 
@@ -63,6 +75,11 @@ export default function HomeScreen() {
           </View>
         </View>
       </ScrollView>
+
+      <BottomSheetFilters
+        shown={bottomSheetShown}
+        onClose={onBottomSheetClose}
+      />
     </Container>
   );
 }
@@ -70,6 +87,7 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
+    paddingTop: Constants.statusBarHeight
   },
   header: {
     flexDirection: 'row',
