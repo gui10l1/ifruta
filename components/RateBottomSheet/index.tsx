@@ -48,8 +48,9 @@ export default function RateBottomSheet({ shown, onClose, onRate }: IRateBottomS
             return (
               <TouchableOpacity
                 onPress={() => handleRate(rate)}
+                key={item}
               >
-                <MaterialIcons key={item} name="star" color={selected ? '#f00' : '#D9D9D9'} size={46} />
+                <MaterialIcons key={item} name="star" color={selected ? '#D92525' : '#D9D9D9'} size={46} />
               </TouchableOpacity>
             );
           })}

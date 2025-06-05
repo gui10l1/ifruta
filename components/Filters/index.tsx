@@ -50,7 +50,7 @@ const Thumb = ({ value }: IThumb) => {
 }
 
 const RailSelected = () => {
-  return <View style={{ flex: 1, backgroundColor: '#f00', height: 2 }} />
+  return <View style={{ flex: 1, backgroundColor: '#D92525', height: 2 }} />
 }
 
 export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBottomSheetFilters) {
@@ -172,7 +172,7 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
               return (
                 <TouchableOpacity
                   key={category}
-                  style={[styles.categoryButton, selected ? { backgroundColor: 'red' } : {}]}
+                  style={[styles.categoryButton, selected ? { backgroundColor: '#D92525' } : {}]}
                   onPress={() => handleCategoryToggle(category)}
                 >
                   <Text
@@ -220,7 +220,7 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
               return (
                 <TouchableOpacity
                   key={searchFor}
-                  style={[styles.categoryButton, selected ? { backgroundColor: 'red' } : {}]}
+                  style={[styles.categoryButton, selected ? { backgroundColor: '#D92525' } : {}]}
                   onPress={() => handleSearchForToggle(searchFor)}
                 >
                   <Text
@@ -250,10 +250,10 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
               return (
                 <TouchableOpacity
                   key={rating}
-                  style={[styles.starButton, selected ? { backgroundColor: 'red' } : {}]}
+                  style={[styles.starButton, selected ? { backgroundColor: '#D92525' } : {}]}
                   onPress={() => handleRatingToggle(rating)}
                 >
-                  <Feather name="star" color={selected ? '#fff' : "#f00"} />
+                  <Feather name="star" color={selected ? '#fff' : "#D92525"} />
 
                   <Text
                     style={[styles.starButtonText, selected ? { color: 'white' } : {}]}
@@ -316,11 +316,11 @@ const styles = StyleSheet.create({
     paddingVertical: 6,
     borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: '#D92525',
     borderRadius: 40,
   },
   categoryButtonText: {
-    color: 'red',
+    color: '#D92525',
     fontSize: 16,
   },
   starButton: {
@@ -330,13 +330,13 @@ const styles = StyleSheet.create({
     gap: 4,
     borderStyle: 'solid',
     borderWidth: 1,
-    borderColor: 'red',
+    borderColor: '#D92525',
     borderRadius: 40,
     paddingHorizontal: 8,
     paddingVertical: 6,
   },
   starButtonText: {
-    color: 'red',
+    color: '#D92525',
     fontSize: 16,
   },
   buttonsContainer: {
@@ -355,7 +355,7 @@ const styles = StyleSheet.create({
   thumb: {
     height: 20,
     width: 20,
-    backgroundColor: '#f00',
+    backgroundColor: '#D92525',
     borderRadius: 10,
   },
   thumbValue: {

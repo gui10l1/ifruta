@@ -15,13 +15,13 @@ const styles = StyleSheet.create({
     height: 60,
     alignItems: 'center',
     justifyContent: 'center',
-    borderColor: 'red',
+    borderColor: '#D92525',
     borderWidth: 1,
     borderStyle: 'solid',
   },
   text: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'red'
+    color: '#D92525'
   }
 });

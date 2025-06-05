@@ -20,7 +20,7 @@ export default function Product({ image, name, price, onPress }: IProduct) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'red',
+    backgroundColor: '#D92525',
     flex: 1,
   },
   image: {
