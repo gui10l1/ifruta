@@ -18,7 +18,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
     borderWidth: 1,
     borderStyle: 'solid',
-    backgroundColor: 'red'
+    backgroundColor: '#D92525'
   },
   text: {
     fontSize: 18,

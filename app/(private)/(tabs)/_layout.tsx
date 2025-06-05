@@ -16,7 +16,7 @@ function TabIcon({ name, active }: ITabIcon) {
 const tabDefaultOptions: any = {
   tabBarLabelStyle: { display: 'none' },
   tabBarItemStyle: {
-    backgroundColor: 'red',
+    backgroundColor: '#D92525',
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -31,7 +31,7 @@ export default function TabsLayout() {
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#000',
-        tabBarStyle: { backgroundColor: 'red', height: 100 },
+        tabBarStyle: { backgroundColor: '#D92525', height: 100 },
       }}
     >
       <Tabs.Screen
