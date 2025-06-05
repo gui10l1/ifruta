@@ -14,13 +14,20 @@ import carrot from '../../../../assets/ZgDHMMd72I8.png';
 import BottomSheetFilters from "../../../../components/Filters";
 import { useState } from "react";
 import Constants from 'expo-constants';
+import { useRouter } from "expo-router";
 
 export default function HomeScreen() {
+  const router = useRouter();
+
   const [bottomSheetShown, setBottomSheetShown] = useState(false);
 
   const handleShowBottomSheet = () => setBottomSheetShown(true);
 
   const onBottomSheetClose = () => setBottomSheetShown(false);
+
+  const handleProductPress = (productId: number) => {
+    router.push(`/(private)/product-details/${productId}`);
+  }
 
   return (
     <Container style={{ paddingTop: 0 }}>
@@ -47,17 +54,20 @@ export default function HomeScreen() {
         <View style={styles.content}>
           <Product
             price={10}
+            onPress={() => handleProductPress(1)}
             image={oranges}
           />
 
           <View style={styles.contentRow}>
             <Product
               price={6}
+              onPress={() => handleProductPress(2)}
               image={carrot}
             />
 
             <Product
               price={5}
+              onPress={() => handleProductPress(3)}
               image={cuke}
             />
           </View>
@@ -65,11 +75,13 @@ export default function HomeScreen() {
           <View style={styles.contentRow}>
             <Product
               price={7}
+              onPress={() => handleProductPress(4)}
               image={tomatoes}
             />
 
             <Product
               price={3.5}
+              onPress={() => handleProductPress(5)}
               image={leafs}
             />
           </View>
