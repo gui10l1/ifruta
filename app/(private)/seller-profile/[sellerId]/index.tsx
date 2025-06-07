@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, Linking, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { ActivityIndicator, Image, Linking, Platform, StatusBar, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import Container from "../../../../components/Container";
 import BackButton from "../../../../components/BackButton";
 
@@ -53,7 +53,7 @@ export default function SellerProfileScreen() {
   return (
     <Container style={{ paddingTop: 0 }}>
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" />
+        <StatusBar barStyle={Platform.OS === 'android' ? "light-content" : 'dark-content'} />
 
         <BackButton color="#000" />
 
