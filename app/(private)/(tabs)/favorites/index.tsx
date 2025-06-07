@@ -4,10 +4,13 @@ import { useFavorites } from "../../../../contexts/FavoriteContext";
 import { useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
+import { useRouter } from "expo-router";
 
 const categories = ["All", "Clothes", "Fridge", "Oven"];
 
 export default function FavoritesTab() {
+  const router = useRouter();
+
   const { favorites } = useFavorites();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const navigation = useNavigation();
@@ -16,6 +19,10 @@ export default function FavoritesTab() {
     selectedCategory === "All"
       ? favorites
       : favorites.filter((item) => item.category === selectedCategory);
+
+  const handleNavigateToProductsScreen = (productId: number) => {
+    router.push(`/(private)/product-details/${productId}`);
+  }
 
   return (
     <Container>
@@ -53,7 +60,7 @@ export default function FavoritesTab() {
           <Text style={styles.emptyText}>Nenhum produto favorito ainda.</Text>
         ) : (
           filteredFavorites.map((product) => (
-            <View key={product.id} style={styles.card}>
+            <TouchableOpacity key={product.id} style={styles.card} onPress={() => handleNavigateToProductsScreen(product.id)}>
               <Image source={product.image} style={styles.image} />
               <View style={styles.info}>
                 <Text style={styles.name}>{product.name}</Text>
@@ -63,7 +70,7 @@ export default function FavoritesTab() {
                 </View>
                 <Text style={styles.price}>R${product.price.toFixed(2)}/kg</Text>
               </View>
-            </View>
+            </TouchableOpacity>
           ))
         )}
       </ScrollView>

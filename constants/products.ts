@@ -13,6 +13,7 @@ export interface IProduct {
   price: number;
   image: ImageSourcePropType;
   ownerId: number;
+  category?: string;
 }
 
 const products: IProduct[] = [

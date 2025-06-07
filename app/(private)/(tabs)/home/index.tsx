@@ -31,7 +31,7 @@ export default function HomeScreen() {
 
   return (
     <Container style={{ paddingTop: 0 }}>
-      <ScrollView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity style={styles.headerButton}>
             <Image source={userIcon} />
@@ -99,7 +99,8 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 16,
-    paddingTop: Constants.statusBarHeight
+    paddingTop: Constants.statusBarHeight,
+    paddingBottom: 40,
   },
   header: {
     flexDirection: 'row',
