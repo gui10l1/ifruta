@@ -1,4 +1,4 @@
-import { FlatList, Image, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Image, Platform, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import Container from "../../../../components/Container";
 import BackButton from "../../../../components/BackButton";
 import { useEffect, useState } from "react";
@@ -42,7 +42,7 @@ export default function ChatScreen() {
 
   return (
     <Container>
-      <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle={Platform.OS === 'android' ? "light-content" : 'dark-content'} />
 
       <View style={styles.header}>
         <BackButton color="#000" />

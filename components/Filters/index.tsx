@@ -1,13 +1,13 @@
-import BottomSheet, { BottomSheetScrollView, BottomSheetView } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetScrollView, BottomSheetView, TouchableOpacity } from '@gorhom/bottom-sheet';
 import { useEffect, useRef, useState } from 'react';
-import { Dimensions, ScrollView, StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Dimensions, StyleProp, StyleSheet, Text, View, ViewStyle } from 'react-native';
 import { IBottomSheetFilters, IThumb, Rating } from './interfaces';
 import { Feather } from '@expo/vector-icons';
 import OutlineButton from '../OutlineButton';
 import Button from '../Button';
 import Slider from 'rn-range-slider';
 
-const POINTS = [Dimensions.get('screen').height * .7];
+const POINTS = [Dimensions.get('screen').height * .75];
 
 export function Backdrop({ style }: { style: StyleProp<ViewStyle> }) {
   return <View style={[style, styles.backdrop]} />
@@ -148,18 +148,21 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
       snapPoints={POINTS}
       onClose={onClose}
       backdropComponent={({ style }) => shown ? <Backdrop style={style} /> : null}
-      handleStyle={{ borderRadius: 100 }}
+      handleStyle={{ borderRadius: 100, display: 'none' }}
       style={{ borderRadius: 100 }}
+      enableDynamicSizing={false}
+      enablePanDownToClose={false}
+      enableContentPanningGesture={false}
     >
       <BottomSheetView style={styles.container}>
-        <View style={styles.titleContainer}>
+        <BottomSheetView style={styles.titleContainer}>
           <Text style={styles.title}>Classificar & Filtrar</Text>
-        </View>
+        </BottomSheetView>
 
-        <View style={styles.section}>
+        <BottomSheetView style={styles.section}>
           <Text style={styles.sectionTitle}>Categorias</Text>
 
-          <ScrollView
+          <BottomSheetScrollView
             horizontal
             contentContainerStyle={styles.sectionList}
             showsHorizontalScrollIndicator={false}
@@ -183,13 +186,13 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
                 </TouchableOpacity>
               )
             })}
-          </ScrollView>
-        </View>
+          </BottomSheetScrollView>
+        </BottomSheetView>
 
-        <View style={styles.section}>
+        <BottomSheetView style={styles.section}>
           <Text style={styles.sectionTitle}>Preço</Text>
 
-          <View style={styles.sliderContainer}>
+          <BottomSheetView style={styles.sliderContainer}>
             <Slider
               min={0}
               max={100}
@@ -201,13 +204,13 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
               renderRailSelected={RailSelected}
               onValueChanged={handleRangeValuesChange}
             />
-          </View>
-        </View>
+          </BottomSheetView>
+        </BottomSheetView>
 
-        <View style={styles.section}>
+        <BottomSheetView style={styles.section}>
           <Text style={styles.sectionTitle}>Perquisar por</Text>
 
-          <ScrollView
+          <BottomSheetScrollView
             horizontal
             contentContainerStyle={styles.sectionList}
             showsHorizontalScrollIndicator={false}
@@ -231,13 +234,13 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
                 </TouchableOpacity>
               )
             })}
-          </ScrollView>
-        </View>
+          </BottomSheetScrollView>
+        </BottomSheetView>
 
-        <View style={styles.section}>
+        <BottomSheetView style={styles.section}>
           <Text style={styles.sectionTitle}>Rating</Text>
 
-          <ScrollView
+          <BottomSheetScrollView
             horizontal
             contentContainerStyle={styles.sectionList}
             showsHorizontalScrollIndicator={false}
@@ -263,14 +266,14 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
                 </TouchableOpacity>
               )
             })}
-          </ScrollView>
-        </View>
+          </BottomSheetScrollView>
+        </BottomSheetView>
 
-        <View style={styles.buttonsContainer}>
+        <BottomSheetView style={styles.buttonsContainer}>
           <OutlineButton style={styles.button} onPress={handleResetFilters}>Resetar</OutlineButton>
 
           <Button style={styles.button} onPress={handleConfirmFilters}>Classificar por</Button>
-        </View>
+        </BottomSheetView>
       </BottomSheetView>
     </BottomSheet>
   );
@@ -279,7 +282,7 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    // backgroundColor: '#fff',
     paddingHorizontal: 16,
   },
   backdrop: {
@@ -344,6 +347,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: 16,
     marginTop: 24,
+    marginBottom: 40,
   },
   button: {
     flex: 1,
