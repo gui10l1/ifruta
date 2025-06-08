@@ -9,13 +9,20 @@ Foi desenvolvido com [React Native](https://reactnative.dev/) utilizando o [Expo
 
 ### 1. Clone o repositório 
 
-```bash git clone https://github.com/seu-usuario/nome-do-repositorio.git cd nome-do-repositorio 
+```bash
+git clone https://github.com/seu-usuario/nome-do-repositorio.git cd nome-do-repositorio
+```
 
 2. Instale as dependências
-npm install 
+```bash
+npm install
+```
 
 3. Inicie o servidor de desenvolvimento
-npm start 
+```bash
+npm start
+```
+
 Isso abrirá uma aba no navegador com o Expo DevTools. Você verá um QR Code que pode ser escaneado com o app Expo Go no seu celular para rodar o app.
 
 # Para Testar
