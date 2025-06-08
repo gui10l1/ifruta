@@ -3,9 +3,13 @@
 
 Foi desenvolvido com [React Native](https://reactnative.dev/) utilizando o [Expo](https://expo.dev/), com suporte para execução diretamente no aplicativo **Expo Go**. 
 
-## ✅ Pré-requisitos Antes de começar, você precisa ter instalado: - [Node.js](https://nodejs.org/) (versão LTS recomendada) - [Expo CLI](https://docs.expo.dev/get-started/installation/) - [Git](https://git-scm.com/) - Um smartphone com o app [Expo Go](https://expo.dev/client) instalado (Android ou iOS)
+## ✅ Pré-requisitos
 
-## 🚀 Como rodar o projeto Siga os passos abaixo para rodar o app localmente no seu dispositivo com **Expo Go**: 
+Antes de começar, você precisa ter instalado: - [Node.js](https://nodejs.org/) (versão LTS recomendada) - [Expo CLI](https://docs.expo.dev/get-started/installation/) - [Git](https://git-scm.com/) - Um smartphone com o app [Expo Go](https://expo.dev/client) instalado (Android ou iOS)
+
+## 🚀 Como rodar o projeto
+
+Siga os passos abaixo para rodar o app localmente no seu dispositivo com **Expo Go**: 
 
 ### 1. Clone o repositório 
 
