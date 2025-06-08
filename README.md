@@ -47,10 +47,10 @@ Para continuar a partir dessa tela é necessário apenas colocar qualquer inform
 
 # Alunos
 
-Eduarda Santos Diniz - uc23101324
-Lucas Seidii Shinohara Moura - Uc23101630
-Arthur Henrique dos Santos Sousa Alves de Godoy - UC23102220
-Ana Clara Clímaco Marinho -uc22201233
-Pedro Vinicius Silva Gomes de Souza - UC23201033
-Guilherme Ribeiro Soares - uc21200089
-GABRIEL VIEIRA FERREIRA - UC23100292
+- Eduarda Santos Diniz - uc2310132
+- Lucas Seidii Shinohara Moura - Uc23101630
+- Arthur Henrique dos Santos Sousa Alves de Godoy - UC23102220
+- Ana Clara Clímaco Marinho -uc22201233
+- Pedro Vinicius Silva Gomes de Souza - UC23201033
+- Guilherme Ribeiro Soares - uc21200089
+- GABRIEL VIEIRA FERREIRA - UC23100292
