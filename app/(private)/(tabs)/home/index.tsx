@@ -39,8 +39,8 @@ export default function HomeScreen() {
 
           <Image source={logo} />
 
-          <TouchableOpacity style={styles.headerButton}>
-            <Image source={robotsIcon} />
+          <TouchableOpacity style={styles.headerButton} disabled>
+            {/* <Image source={robotsIcon} /> */}
           </TouchableOpacity>
         </View>
 

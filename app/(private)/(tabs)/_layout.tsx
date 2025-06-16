@@ -16,7 +16,7 @@ function TabIcon({ name, active }: ITabIcon) {
 const tabDefaultOptions: any = {
   tabBarLabelStyle: { display: 'none' },
   tabBarItemStyle: {
-    backgroundColor: '#D92525',
+    // backgroundColor: '#D92525',
     alignItems: 'center',
     justifyContent: 'center',
   },
