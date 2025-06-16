@@ -14,7 +14,7 @@ Siga os passos abaixo para rodar o app localmente no seu dispositivo com **Expo 
 ### 1. Clone o repositório 
 
 ```bash
-git clone https://github.com/seu-usuario/nome-do-repositorio.git cd nome-do-repositorio
+git clone https://github.com/gui10l1/ifruta.git && cd ifruta
 ```
 
 2. Instale as dependências
