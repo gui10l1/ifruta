@@ -34,8 +34,8 @@ export default function ChatTab() {
 
           <Text style={styles.headerTitle}>Chats</Text>
 
-          <TouchableOpacity style={styles.headerButton}>
-            <Image source={robotsIcon} />
+          <TouchableOpacity style={styles.headerButton} disabled>
+            {/* <Image source={robotsIcon} /> */}
           </TouchableOpacity>
         </View>
         

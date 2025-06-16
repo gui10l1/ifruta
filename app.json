@@ -25,7 +25,19 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Este aplicativo requer permissões para acessar a galeria a fim de criar novos produtos"
+        }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Este aplicativo requer permissões para acessar a camera a fim de criar novos produtos"
+        }
+      ]
     ],
     "scheme": "ifruta"
   }
