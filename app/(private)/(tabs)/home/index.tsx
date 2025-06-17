@@ -29,11 +29,15 @@ export default function HomeScreen() {
     router.push(`/(private)/product-details/${productId}`);
   }
 
+  const handlePushToSettingsScreen = () => {
+    router.push(`/(private)/settings`);
+  }
+
   return (
     <Container style={{ paddingTop: 0 }}>
       <ScrollView contentContainerStyle={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity style={styles.headerButton} onPress={handlePushToSettingsScreen}>
             <Image source={userIcon} />
           </TouchableOpacity>
 
