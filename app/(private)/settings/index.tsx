@@ -6,11 +6,33 @@ import user from '../../../assets/user 1.png';
 import off from '../../../assets/log-out 1.png';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
+import { supabase } from "../../../lib/supabase/supabase";
+import { useEffect, useState } from "react";
 
 export default function SettingsScreen() {
   const { push } = useRouter();
 
-  const logout = () => {
+  const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function getUserProfilePic() {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: { publicUrl } } = supabase.storage
+          .from('users-photos')
+          .getPublicUrl(user.user_metadata.profile_pic);
+
+        setProfilePicUrl(publicUrl);
+      }
+    }
+
+    getUserProfilePic();
+  }, []);
+
+  const logout = async () => {
+    await supabase.auth.signOut();
+
     push(`/(public)/login`);
   }
 
@@ -29,7 +51,13 @@ export default function SettingsScreen() {
 
         <View style={styles.profilePicContainer}>
           <View style={styles.profilePic}>
-            <Image source={user} />
+            <Image  
+              defaultSource={user}
+              source={{ uri: profilePicUrl || '' }}
+              borderRadius={styles.profilePic.borderRadius}
+              width={styles.profilePic.width}
+              height={styles.profilePic.height}
+            />
           </View>
         </View>
 

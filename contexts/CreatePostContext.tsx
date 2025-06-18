@@ -1,6 +1,6 @@
 import { createContext, PropsWithChildren, useState } from "react";
 
-interface IPhoto {
+export interface IDataPhoto {
   format: string;
   uri: string;
   width: number;
@@ -14,7 +14,7 @@ interface IData {
   description?: string;
   title?: string;
   price?: number;
-  photos?: IPhoto[];
+  photos?: IDataPhoto[];
 }
 
 export interface ICreatePostContext {

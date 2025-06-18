@@ -9,6 +9,11 @@ import Button from "../../../components/Button";
 import * as Yup from 'yup';
 import { useState } from "react";
 import { getValidationErrors } from "../../../utils/getValidationErrors";
+import { supabase } from "../../../lib/supabase/supabase";
+import { IDataPhoto } from "../../../contexts/CreatePostContext";
+import getFilenameByUri from "../../../utils/getFilenameByUri";
+import * as FileSystem from 'expo-file-system';
+import { Buffer } from 'buffer';
 
 const schema = Yup.object({
   title: Yup.string().required('Preencha este campo!'),
@@ -34,6 +39,27 @@ export default function ProductInfoScreen() {
     push(`/(private)/product-state`);
   }
 
+  const uploadPhotos = async (productId: string, photos: IDataPhoto[]) => {
+    const paths: string[] = [];
+
+    for (const photo of photos) {
+      const key = `${productId}/${getFilenameByUri(photo.uri)}`;
+      const fileContent = await FileSystem.readAsStringAsync(photo.uri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+
+      const { data, error } = await supabase.storage
+        .from('products-photos')
+        .upload(key, Buffer.from(fileContent, 'base64'));
+
+      if (error) console.error(error);
+
+      if (data) paths.push(data.path);
+    }
+
+    return paths;
+  }
+
   const handlePublish = async () => {
     try {
       setErrors({});
@@ -50,7 +76,33 @@ export default function ProductInfoScreen() {
         }
       );
 
-      console.log(data);
+      const { data: productId, error } = await supabase.rpc(`create_product`, {
+        _title: data?.title,
+        _price: Number(data?.price) || 0,
+        _description: data?.description,
+        _category: data?.category,
+        _type: data?.type,
+        _photos: [],
+        _state: data?.state,
+      });
+
+      if (error) {
+        console.error('Error creating product:', error);
+        return;
+      }
+
+      if (productId && data?.photos?.length) {
+        const photosPaths = await uploadPhotos(productId, data.photos);
+        const { error } = await supabase.rpc(`update_product_photos`, {
+          _product_id: productId,
+          _photos: photosPaths,
+        });
+
+        if (error) {
+          console.error('Error uploading photos:', error);
+          return;
+        }
+      }
 
       resetPostData();
 

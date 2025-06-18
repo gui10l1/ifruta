@@ -1,7 +1,7 @@
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { IProduct } from "./interfaces";
 
-export default function Product({ image, name, price, onPress }: IProduct) {
+export default function Product({ image, price, onPress }: IProduct) {
   const numberFormat = new Intl.NumberFormat('pt-BR', {
     currency: 'BRL',
     style: 'currency',
@@ -25,6 +25,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
+    height: 150,
   },
   productTitleContainer: {
     paddingVertical: 8,

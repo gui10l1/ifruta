@@ -5,9 +5,9 @@ interface IPriceRange {
   max: number;
 }
 
-interface IFilters {
+export interface IFilters {
   categories: string[];
-  searchFor: string[];
+  searchFor: string;
   ratings: Rating[];
   priceRange: IPriceRange;
 }
@@ -16,6 +16,7 @@ export interface IBottomSheetFilters {
   shown: boolean;
   onClose(): void;
   onConfirm?(filters: IFilters): void;
+  onReset?(): void;
 }
 
 export enum Rating {

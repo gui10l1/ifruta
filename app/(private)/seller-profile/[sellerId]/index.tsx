@@ -7,9 +7,20 @@ import { useEffect, useState } from "react";
 import If from "../../../../components/If";
 import { Feather } from '@expo/vector-icons';
 import Button from "../../../../components/Button";
-import sellers, { ISeller } from "../../../../constants/sellers";
+import sellers from "../../../../constants/sellers";
 import RateBottomSheet from "../../../../components/RateBottomSheet";
 import Constants from 'expo-constants';
+import { supabase } from "../../../../lib/supabase/supabase";
+import getProductPhotoUrl from "../../../../utils/getProductPhotoUrl";
+import getUserPhotoUrl from "../../../../utils/getUserPhotoUrl";
+
+interface ISeller {
+  id: number;
+  profile_pic: string;
+  name: string;
+  email: string;
+  phone: string;
+}
 
 export default function SellerProfileScreen() {
   const { sellerId } = useLocalSearchParams();
@@ -21,9 +32,20 @@ export default function SellerProfileScreen() {
   const [loadingPhone, setLoadingPhone] = useState(false);
 
   useEffect(() => {
-    const seller = sellers.find(s => s.id === Number(sellerId));
+    async function loadUser() {
+      const { data, error } = await supabase.rpc(`get_user_by_id`, {
+        _user_id: sellerId,
+      });
 
-    setSeller(seller || null);
+      if (error) {
+        console.error("Error fetching user:", error);
+        return;
+      }
+
+      setSeller(data[0]);
+    }
+
+    loadUser();
   }, [sellerId]);
 
   const handleShowBottomSheet = () => {
@@ -63,7 +85,7 @@ export default function SellerProfileScreen() {
         >
           <View style={styles.header}>
             <Image
-              source={seller?.image}
+              source={{ uri: getUserPhotoUrl(seller?.profile_pic) }}
               style={styles.sellerImage}
             />
 
@@ -121,7 +143,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
     gap: 21,
     marginTop: 22,
   },
