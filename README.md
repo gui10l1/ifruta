@@ -17,12 +17,12 @@ Siga os passos abaixo para rodar o app localmente no seu dispositivo com **Expo 
 git clone https://github.com/gui10l1/ifruta.git && cd ifruta
 ```
 
-2. Instale as dependências
+### 2. Instale as dependências
 ```bash
 npm install
 ```
 
-3. Variáveis de ambiente
+### 3. Variáveis de ambiente
 
 Este projeto faz uso de variáveis de ambiente, isso porque os valores dessas variáveis
 são considerados sensíveis e definem como o aplicativo vai funcionar.
@@ -42,7 +42,7 @@ EXPO_PUBLIC_SUPABASE_ANON_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJz
 
 O conteúdo acima é referente ao Supabase, que é o serviço que vai forcener dados e atuará como backend para o aplicativo.
 
-4. Inicie o servidor de desenvolvimento
+### 4. Inicie o servidor de desenvolvimento
 ```bash
 npm start
 ```
