@@ -100,8 +100,8 @@ export default function SignUpScreen() {
                 />
               </View>
 
-              <If condition={!!errors.email}>
-                <Text style={styles.validation}>{errors.email}</Text>
+              <If condition={!!errors.fullName}>
+                <Text style={styles.validation}>{errors.fullName}</Text>
               </If>
             </View>
 
@@ -140,8 +140,8 @@ export default function SignUpScreen() {
                 />
               </View>
 
-              <If condition={!!errors.email}>
-                <Text style={styles.validation}>{errors.email}</Text>
+              <If condition={!!errors.phone}>
+                <Text style={styles.validation}>{errors.phone}</Text>
               </If>
             </View>
 
