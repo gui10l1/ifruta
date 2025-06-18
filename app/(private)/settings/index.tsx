@@ -1,33 +1,30 @@
-import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Image, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BackButton from "../../../components/BackButton";
 import Container from "../../../components/Container";
 import userOutline from '../../../assets/user (1) 2.png';
-import user from '../../../assets/user 1.png';
+import userPic from '../../../assets/user 1.png';
 import off from '../../../assets/log-out 1.png';
 import { Feather } from '@expo/vector-icons';
 import { useRouter } from "expo-router";
 import { supabase } from "../../../lib/supabase/supabase";
 import { useEffect, useState } from "react";
+import { User } from "@supabase/supabase-js";
+import getUserPhotoUrl from "../../../utils/getUserPhotoUrl";
 
 export default function SettingsScreen() {
   const { push } = useRouter();
 
-  const [profilePicUrl, setProfilePicUrl] = useState<string | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const getUser = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+
+    setUser(user);
+  }
 
   useEffect(() => {
-    async function getUserProfilePic() {
-      const { data: { user } } = await supabase.auth.getUser();
-
-      if (user) {
-        const { data: { publicUrl } } = supabase.storage
-          .from('users-photos')
-          .getPublicUrl(user.user_metadata.profile_pic);
-
-        setProfilePicUrl(publicUrl);
-      }
-    }
-
-    getUserProfilePic();
+    getUser();
   }, []);
 
   const logout = async () => {
@@ -40,9 +37,26 @@ export default function SettingsScreen() {
     push(`/(private)/profile`);
   }
 
+  const handleRefresh = async () => {
+    setRefreshing(true);
+
+    await getUser();
+
+    setRefreshing(false);
+  }
+
   return (
     <Container>
-      <ScrollView style={styles.content} contentContainerStyle={styles.container}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+          />
+        }
+      >
         <View style={styles.header}>
           <BackButton color="#000" />
 
@@ -52,8 +66,8 @@ export default function SettingsScreen() {
         <View style={styles.profilePicContainer}>
           <View style={styles.profilePic}>
             <Image  
-              defaultSource={user}
-              source={{ uri: profilePicUrl || '' }}
+              defaultSource={userPic}
+              source={{ uri: getUserPhotoUrl(user?.user_metadata.profile_pic) }}
               borderRadius={styles.profilePic.borderRadius}
               width={styles.profilePic.width}
               height={styles.profilePic.height}

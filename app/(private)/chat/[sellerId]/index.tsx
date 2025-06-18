@@ -1,44 +1,117 @@
-import { FlatList, Image, Platform, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
+import { FlatList, Image, Platform, RefreshControl, ScrollView, StatusBar, StyleSheet, Text, TextInput, View } from "react-native";
 import Container from "../../../../components/Container";
 import BackButton from "../../../../components/BackButton";
 import { useEffect, useState } from "react";
-import sellers, { ISeller } from "../../../../constants/sellers";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import Button from "../../../../components/Button";
 import list from '../../../../assets/list 1.png';
+import { supabase } from "../../../../lib/supabase/supabase";
+import { User } from "@supabase/supabase-js";
+interface ISeller {
+  id: string;
+  profile_pic: string;
+  full_name: string;
+  email: string;
+  phone: string;
+}
 
-const FlatListHeader = () => {
-  const router = useRouter();
+interface IMessage {
+  id: string;
+  created_at: string;
+  content: string;
+  from_user_id: string;
+  to_user_id: string;
+}
 
-  const handlePress = () => {
-    router.back();
-  }
-
-  return (
-    <View style={styles.chatHeader}>
-      <Button style={styles.chatHeaderButton} onPress={handlePress}>
-        <View style={styles.chatHeaderButtonTextWrapper}>
-          <Image source={list} />
-
-          <Text style={styles.chatHeaderButtonText}>Listing</Text>
-        </View>
-      </Button>
-    </View>
-  );
+interface IRenderMessages {
+  item: IMessage;
+  index: number;
 }
 
 export default function ChatScreen() {
   const { sellerId } = useLocalSearchParams();
 
   const [seller, setSeller] = useState<ISeller | null>(null);
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [typedMessage, setTypedMessage] = useState<string>('');
+  const [user, setUser] = useState<User | null>(null);
+
+  const loadMessages = async () => {
+    console.log('Retrieved messages', Date.now());
+
+    const { data, error } = await supabase.rpc(`get_conversation_with_user`, {
+      _other_user_id: sellerId,
+    });
+
+    if (error) {
+      console.error("Error fetching messages:", error);
+      return;
+    }
+
+    setMessages(data);
+  }
 
   useEffect(() => {
-    const seller = sellers.find(s => s.id === Number(sellerId))
+    async function loadUser() {
+      const { data: { user } } = await supabase.auth.getUser();
 
-    setSeller(seller || null);
+      setUser(user);
+    }
+
+    loadUser();
+  }, []);
+
+  useEffect(() => {
+    loadMessages();
   }, [sellerId]);
 
-  const renderMessages = () => null;
+  useEffect(() => {
+    const interval = setInterval(() => {
+      loadMessages();
+    }, 1000);
+
+    return () => {
+      clearInterval(interval);
+    }
+  }, []);
+
+  useEffect(() => {
+    async function loadUser() {
+      const { data, error } = await supabase.rpc(`get_user_by_id`, {
+        _user_id: sellerId,
+      });
+
+      if (error) {
+        console.error("Error fetching user:", error);
+        return;
+      }
+
+      setSeller(data[0]);
+    }
+
+    loadUser();
+  }, [sellerId]);
+
+  const renderMessages = ({ index, item }: IRenderMessages) => {
+    return (
+      <View style={[item.from_user_id === seller?.id ? styles.outsideMessageContainer : styles.myMessageContainer, styles.messageContainer]}>
+        <View style={[styles.message, item.from_user_id === seller?.id ? styles.outsideMessage : styles.myMessage]}>
+          <Text style={styles.messageText}>{item.content}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  const handleSendMessage = async () => {
+    await supabase.rpc(`send_message`, {
+      _to_user_id: sellerId,
+      _content: typedMessage,
+    });
+
+    await loadMessages();
+
+    setTypedMessage('');
+  }
 
   return (
     <Container>
@@ -47,18 +120,27 @@ export default function ChatScreen() {
       <View style={styles.header}>
         <BackButton color="#000" />
 
-        <Text style={styles.headerTitle}>{seller?.name}</Text>
+        <Text style={styles.headerTitle}>{seller?.full_name}</Text>
       </View>
 
       <FlatList
         style={styles.chatContainer}
-        ListHeaderComponent={<FlatListHeader />}
         renderItem={renderMessages}
-        data={[]}
+        data={messages}
+        contentContainerStyle={{ paddingTop: 20, gap: 8 }}
+        inverted
       />
 
       <View style={styles.inputContainer}>
-        <TextInput style={styles.input} placeholderTextColor="#fff" placeholder="Type your message..." />
+        <TextInput
+          style={styles.input}
+          placeholderTextColor={sellerId === user?.id ? '#000' : "#fff"}
+          placeholder={sellerId === user?.id ? 'Você não pode conversar com si mesmo!' : "Escreva sua mensagem..."}
+          value={typedMessage}
+          onChangeText={setTypedMessage}
+          onSubmitEditing={handleSendMessage}
+          readOnly={sellerId === user?.id}
+        />
       </View>
     </Container>
   );
@@ -86,6 +168,7 @@ const styles = StyleSheet.create({
   chatContainer: {
     flex: 1,
     marginTop: 10,
+    paddingHorizontal: 16,
   },
   chatHeader: {
     flexDirection: 'row',
@@ -115,5 +198,36 @@ const styles = StyleSheet.create({
     height: 42,
     color: '#000',
     paddingHorizontal: 22,
+  },
+  messageContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderRadius: 16,
+  },
+  message: {
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 16,
+    maxWidth: '90%',
+  },
+  messageText: {
+    fontSize: 18,
+    fontWeight: 'normal',
+    color: '#fff'
+  },
+  outsideMessageContainer: {
+    justifyContent: 'flex-start',
+    borderRadius: 16,
+  },
+  outsideMessage: {
+    backgroundColor: 'rgba(0, 0, 0, .9)'
+  },
+  myMessageContainer: {
+    borderRadius: 16,
+    justifyContent: 'flex-end',
+  },
+  myMessage: {
+    backgroundColor: 'rgba(217, 37, 37, .9)',
+    borderRadius: 16,
   },
 });

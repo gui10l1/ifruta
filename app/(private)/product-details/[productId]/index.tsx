@@ -18,7 +18,6 @@ import Container from "../../../../components/Container";
 import If from "../../../../components/If";
 import Button from "../../../../components/Button";
 import BackButton from "../../../../components/BackButton";
-import { useFavorites } from "../../../../contexts/FavoriteContext";
 import { supabase } from "../../../../lib/supabase/supabase";
 import getProductPhotoUrl from "../../../../utils/getProductPhotoUrl";
 
@@ -68,7 +67,7 @@ export default function ProductDetailsScreen() {
   };
 
   const handlePushToSellerProfile = (ownerId: string) => {
-    router.push(`/(private)/seller-profile/${ownerId}`);
+    router.push(`/(private)/seller-profile/${ownerId}?productId=${productId}`);
   };
 
   const handleFavoriteButton = async () => {
@@ -124,7 +123,7 @@ export default function ProductDetailsScreen() {
 
             <View style={styles.priceContainer}>
               <View style={styles.priceTextContainer}>
-                <Text style={styles.totalPriceText}>Total price</Text>
+                <Text style={styles.totalPriceText}>Preço</Text>
                 <Text style={styles.price}>{numberFormat(product?.price || 0)}</Text>
               </View>
 
@@ -132,7 +131,7 @@ export default function ProductDetailsScreen() {
                 style={styles.button}
                 onPress={() => product?.user_id && handlePushToContact(product.user_id)}
               >
-                Contact seller
+                Falar com vendedor
               </Button>
             </View>
           </View>

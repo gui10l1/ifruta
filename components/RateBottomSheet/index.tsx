@@ -7,10 +7,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 
 const POINTS = [Dimensions.get('screen').height * .45];
 
-export default function RateBottomSheet({ shown, onClose, onRate }: IRateBottomSheet) {
+export default function RateBottomSheet({ shown, onClose, onRate, rating }: IRateBottomSheet) {
   const bottomSheetRef = useRef<BottomSheet>(null);
-
-  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     if (shown) {
@@ -21,11 +19,7 @@ export default function RateBottomSheet({ shown, onClose, onRate }: IRateBottomS
   }, [shown]);
 
   const handleRate = (count: number) => {
-    const rate = rating === count ? 0 : count;
-
-    if (onRate) onRate(rate);
-
-    setRating(rate);
+    if (onRate) onRate(count);
   }
 
   return (

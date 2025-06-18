@@ -1,7 +1,7 @@
 import { Image, ImageSourcePropType, ScrollView, StyleSheet, Text, View } from "react-native";
-import Container from "../../../../components/Container";
-import BackButton from "../../../../components/BackButton";
-import userIcon from '../../../../assets/user 1.png';
+import Container from "../../../components/Container";
+import BackButton from "../../../components/BackButton";
+import userIcon from '../../../assets/user 1.png';
 
 interface INotification {
   id: number;
@@ -38,11 +38,11 @@ export default function NotificationsTab() {
       <View style={styles.header}>
         {/* <BackButton color="#000" /> */}
 
-        <Text style={styles.headerTitle}>Notifications</Text>
+        <Text style={styles.headerTitle}>Notificações</Text>
       </View>
 
       <ScrollView style={styles.container}>
-        <Text style={styles.period}>Today</Text>
+        <Text style={styles.period}>Esta semana</Text>
         
         {renderNotifications()}
       </ScrollView>

@@ -61,14 +61,14 @@ export default function TabsLayout() {
         }}
       />
 
-      <Tabs.Screen
+      {/* <Tabs.Screen
         name="notifications/index"
         options={{
           title: '',
           tabBarIcon: ({ focused }) => <TabIcon name="bell" active={focused} />,
           ...tabDefaultOptions,
         }}
-      />
+      /> */}
 
       <Tabs.Screen
         name="chat/index"
