@@ -2,7 +2,6 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import BackButton from "../../../components/BackButton";
 import Container from "../../../components/Container";
 import Radio from "../../../components/Radio";
-import { useState } from "react";
 import useCreatePost from "../../../hooks/useCreatePost";
 
 const CATEGORIES = [
