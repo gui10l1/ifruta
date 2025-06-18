@@ -49,12 +49,6 @@ npm start
 
 Isso abrirá uma aba no navegador com o Expo DevTools. Você verá um QR Code que pode ser escaneado com o app Expo Go no seu celular para rodar o app.
 
-# Para Testar
-
-Ao iniciar o app será pedido login com email e senha
-
-Para continuar a partir dessa tela é necessário apenas colocar qualquer informação nos campos e continuar
-
 ## Fluxos
 
 Todo o aplicativo foi testado durante o desenvolvimento e deve funcionar corretamente em qualquer fluxo que o usuário deseja testar.
