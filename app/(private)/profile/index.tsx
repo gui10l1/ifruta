@@ -1,4 +1,4 @@
-import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Alert, Image, Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Container from "../../../components/Container";
 import BackButton from "../../../components/BackButton";
 import If from "../../../components/If";
@@ -10,7 +10,6 @@ import { getValidationErrors } from "../../../utils/getValidationErrors";
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
 import { supabase } from "../../../lib/supabase/supabase";
-import { FileObject } from '@supabase/storage-js';
 import * as FileSystem from 'expo-file-system';
 import { useRouter } from "expo-router";
 import { Buffer } from 'buffer';
@@ -369,7 +368,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 20,
     textAlignVertical: 'top',
-    height: 50,
+    height: Platform.OS === 'ios' ? 50 : 'auto',
   },
   profilePicContainer: {
     alignItems: 'center',

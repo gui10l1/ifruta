@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { Platform, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
 import Container from "../../../components/Container";
 import BackButton from "../../../components/BackButton";
 import If from "../../../components/If";
@@ -258,7 +258,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     paddingHorizontal: 20,
     textAlignVertical: 'top',
-    height: 50,
+    height: Platform.OS === 'ios' ? 50 : 'auto',
   },
   button: {
     marginTop: 30,
