@@ -358,6 +358,7 @@ const styles = StyleSheet.create({
   },
   inputPassword: {
     flex: 1,
+    height: 50,
   },
   togglePasswordButton: {
     alignItems: 'center',
@@ -367,7 +368,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#CDCDCD',
     borderRadius: 20,
     paddingHorizontal: 20,
-    textAlignVertical: 'top'
+    textAlignVertical: 'top',
+    height: 50,
   },
   profilePicContainer: {
     alignItems: 'center',

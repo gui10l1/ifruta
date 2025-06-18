@@ -8,23 +8,11 @@ import { Feather } from '@expo/vector-icons';
 import useCreatePost from "../../../hooks/useCreatePost";
 import { useRouter } from "expo-router";
 
-const PermissionNotGranted = () => {
-  const [, requestPermission] = useCameraPermissions();
-
-  return (
-    <View style={styles.notGrantedPermission}>
-      <Text style={styles.notGrantedPermissionText}>Para usar sua camera permita o acesso</Text>
-
-      <Button style={{ paddingHorizontal: 40 }} onPress={requestPermission}>Solicitar acesso</Button>
-    </View>
-  );
-}
-
 export default function ProductPhotoScreen() {
   const { setPostData, data } = useCreatePost();
   const { back } = useRouter();
   const cameraRef = useRef<CameraView>(null);
-  const [permission] = useCameraPermissions();
+  const [permission, requestPermission] = useCameraPermissions();
 
   const [facing, setFacing] = useState<'front' | 'back'>('back');
 
@@ -57,11 +45,31 @@ export default function ProductPhotoScreen() {
     setFacing(oldState => oldState === 'back' ? 'front' : 'back');
   }
 
+  const handleRequestCameraPermission = async () => {
+    const { canAskAgain, granted } = await requestPermission();
+
+    if (!canAskAgain) {
+      Alert.alert('Sem permissão', 'Nosso aplicativo não pode mais pedir permissão para acessar a camera do seu dispositivo. Você deve permitir manualmente!');
+      return;
+    }
+
+    if (!granted) {
+      Alert.alert('Bloqueado', 'Para tirar uma foto você precisa permitir o uso da camera do seu dispositivo!');
+      return;
+    }
+  }
+
   return (
     <Container style={styles.container}>
       <If
         condition={!!permission?.granted}
-        otherwise={<PermissionNotGranted />}
+        otherwise={
+          <View style={styles.notGrantedPermission}>
+            <Text style={styles.notGrantedPermissionText}>Para usar sua camera permita o acesso</Text>
+
+            <Button style={{ paddingHorizontal: 40 }} onPress={handleRequestCameraPermission}>Solicitar acesso</Button>
+          </View>
+        }
       >
         <CameraView style={styles.camera} facing={facing} ref={cameraRef}>
           <View style={styles.invisibleContent}>

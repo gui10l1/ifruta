@@ -1,6 +1,5 @@
-import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity, RefreshControl } from "react-native";
 import Container from "../../../../components/Container";
-import { useFavorites } from "../../../../contexts/FavoriteContext";
 import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
@@ -31,19 +30,20 @@ export default function FavoritesTab() {
   const navigation = useNavigation();
 
   const [favorites, setFavorites] = useState<IFavorite[]>([]);
+  const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    async function fetchFavorites() {
-      const { data, error } = await supabase.rpc(`get_user_favorites`);
+  const fetchFavorites = async () => {
+    const { data, error } = await supabase.rpc(`get_user_favorites`);
 
-      if (error) {
-        console.error("Error fetching favorites:", error);
-        return;
-      }
-
-      setFavorites(data);
+    if (error) {
+      console.error("Error fetching favorites:", error);
+      return;
     }
 
+    setFavorites(data);
+  }
+
+  useEffect(() => {
     fetchFavorites();
   }, []);
 
@@ -54,6 +54,14 @@ export default function FavoritesTab() {
 
   const handleNavigateToProductsScreen = (productId: string) => {
     router.push(`/(private)/product-details/${productId}`);
+  }
+
+  const handleRefreshList = async () => {
+    setRefreshing(true)
+
+    await fetchFavorites();
+
+    setRefreshing(false)
   }
 
   const categories = (() => {
@@ -104,7 +112,15 @@ export default function FavoritesTab() {
         ))}
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={handleRefreshList}
+          />
+        }
+      >
         {filteredFavorites.length === 0 ? (
           <Text style={styles.emptyText}>Nenhum produto favorito ainda.</Text>
         ) : (
@@ -115,7 +131,7 @@ export default function FavoritesTab() {
                 <Text style={styles.name}>{product.title}</Text>
                 <View style={styles.ratingRow}>
                   <Text style={styles.star}>★</Text>
-                  <Text style={styles.rating}>{product.avg_rating}</Text>
+                  <Text style={styles.rating}>{product.avg_rating?.toFixed(1) || 0}</Text>
                 </View>
                 <Text style={styles.price}>R${product.price.toFixed(2)}/kg</Text>
               </View>

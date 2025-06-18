@@ -158,7 +158,7 @@ export default function ProductInfoScreen() {
           <TextInput
             style={styles.input}
             keyboardType="numeric"
-            onChangeText={text => setPostData({ price: Number(text) })}
+            onChangeText={text => setPostData({ price: !Number(text) ? 0 : Number(text) })}
             value={data?.price?.toString() || ''}
           />
           <If condition={!!errors.price}>
@@ -257,7 +257,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#CDCDCD',
     borderRadius: 20,
     paddingHorizontal: 20,
-    textAlignVertical: 'top'
+    textAlignVertical: 'top',
+    height: 50,
   },
   button: {
     marginTop: 30,
