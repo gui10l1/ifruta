@@ -28,7 +28,7 @@ export default function ChatTab() {
     <Container>
       <ScrollView style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity style={styles.headerButton}>
+          <TouchableOpacity style={styles.headerButton} onPress={() => router.push(`/(private)/settings`)}>
             <Image source={userIcon} />
           </TouchableOpacity>
 

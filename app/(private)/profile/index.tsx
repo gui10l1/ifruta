@@ -2,13 +2,19 @@ import { Alert, Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity
 import Container from "../../../components/Container";
 import BackButton from "../../../components/BackButton";
 import If from "../../../components/If";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import user from '../../../assets/user 1.png';
 import Button from "../../../components/Button";
 import * as Yup from "yup";
 import { getValidationErrors } from "../../../utils/getValidationErrors";
 import { Feather } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { supabase } from "../../../lib/supabase/supabase";
+import { FileObject } from '@supabase/storage-js';
+import * as FileSystem from 'expo-file-system';
+import { useRouter } from "expo-router";
+import { Buffer } from 'buffer';
+import getFilenameByUri from "../../../utils/getFilenameByUri";
 
 interface IPhoto {
   uri: string;
@@ -31,6 +37,8 @@ const schema = Yup.object({
 });
 
 export default function ProfileScreen() {
+  const { back } = useRouter();
+
   const [data, setData] = useState<IFormData>({
     email: '',
     fullName: '',
@@ -38,18 +46,91 @@ export default function ProfileScreen() {
     phone: '',
     photo: null,
   });
+  const [userId, setUserId] = useState<string | null>(null);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
+  const [currentProfilePic, setCurrentProfilePic] = useState<string | null>(null);
+
+  useEffect(() => {
+    async function loadUser() {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user?.user_metadata.profile_pic) {
+        const { data } = supabase
+          .storage
+          .from('users-photos')
+          .getPublicUrl(user?.user_metadata.profile_pic || '');
+
+        setCurrentProfilePic(data.publicUrl);
+      }
+
+      if (user) {
+        setUserId(user.id);
+        setData({
+          email: user.email || '',
+          fullName: user.user_metadata.full_name || '',
+          phone: user.user_metadata.phone || '',
+          password: '',
+          photo: null,
+        });
+      }
+    }
+
+    loadUser();
+  }, []);
 
   const updateData = (data: Partial<IFormData>) => {
     setData(oldState => ({ ...oldState, ...data }));
+  }
+
+  const updateUserPhoto = async (photo: IPhoto) => {
+    if (!userId) {
+      Alert.alert('Ops...', 'Não foi possível autalizar sua foto, tente novamente mais tarde!');
+      return;
+    }
+
+    const key = `${userId}/${getFilenameByUri(photo.uri)}`;
+    const fileContent = await FileSystem.readAsStringAsync(photo.uri, {
+      encoding: FileSystem.EncodingType.Base64,
+    });
+
+    const { data, error } = await supabase.storage
+      .from('users-photos')
+      .upload(key, Buffer.from(fileContent, 'base64'));
+
+    if (error) console.error(error);
+
+    return data?.path;
   }
 
   const handleConfirm = async () => {
     try {
       await schema.validate(data, { abortEarly: false });
 
-      console.log(data);
+      let photoPath: string | undefined;
+
+      if (data.photo) {
+        const path = await updateUserPhoto(data.photo);
+
+        if (path) photoPath = path;
+      }
+
+      const { error } = await supabase.auth.updateUser({
+        email: data.email,
+        data: {
+          full_name: data.fullName,
+          phone: data.phone,
+          profile_pic: photoPath,
+        },
+        password: data.password || undefined,
+      });
+
+      if (error) {
+        Alert.alert('Ops...', error.message);
+        return;
+      }
+
+      back();
     } catch (err) {
       if (err instanceof Yup.ValidationError) {
         const errors = getValidationErrors(err);
@@ -157,9 +238,9 @@ export default function ProfileScreen() {
         <View style={styles.profilePicContainer}>
           <TouchableOpacity style={styles.profilePic} onPress={handleProfilePic}>
             <Image
-              style={data.photo ? { width: styles.profilePic.width, height: styles.profilePic.height } : {}}
-              source={data.photo ? data.photo : user}
-              borderRadius={data.photo ? 80 : 0}
+              style={!!data.photo?.uri || currentProfilePic ? { width: styles.profilePic.width, height: styles.profilePic.height } : {}}
+              source={!!data.photo?.uri || currentProfilePic ? data.photo || { uri: currentProfilePic } : user}
+              borderRadius={!!data.photo?.uri || currentProfilePic ? 80 : 0}
             />
 
             <View style={styles.editIcon}>

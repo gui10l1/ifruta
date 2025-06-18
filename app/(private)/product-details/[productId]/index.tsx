@@ -18,19 +18,44 @@ import Container from "../../../../components/Container";
 import If from "../../../../components/If";
 import Button from "../../../../components/Button";
 import BackButton from "../../../../components/BackButton";
-import products, { IProduct } from "../../../../constants/products";
 import { useFavorites } from "../../../../contexts/FavoriteContext";
+import { supabase } from "../../../../lib/supabase/supabase";
+import getProductPhotoUrl from "../../../../utils/getProductPhotoUrl";
+
+interface IProduct {
+  id: string;
+  created_at: string;
+  updated_at: string;
+  title: string;
+  description?: string;
+  price: number;
+  photos: string[];
+  user_id: string;
+  full_name: string;
+  favorite: boolean;
+}
 
 export default function ProductDetailsScreen() {
   const { productId } = useLocalSearchParams();
   const router = useRouter();
 
-  const { toggleFavorite, isFavorite } = useFavorites();
   const [product, setProduct] = useState<IProduct | null>(null);
 
   useEffect(() => {
-    const product = products.find((p) => p.id === Number(productId));
-    setProduct(product || null);
+    async function loadProduct() {
+      const { data, error } = await supabase.rpc(`get_product_by_id`, {
+        _product_id: productId,
+      });
+
+      if (error) {
+        console.error("Error fetching product:", error);
+        return;
+      }
+
+      setProduct(data[0] || null);
+    }
+
+    loadProduct();
   }, [productId]);
 
   const numberFormat = new Intl.NumberFormat("pt-BR", {
@@ -38,16 +63,27 @@ export default function ProductDetailsScreen() {
     style: "currency",
   }).format;
 
-  const handlePushToContact = (sellerId: number) => {
+  const handlePushToContact = (sellerId: string) => {
     router.push(`/(private)/chat/${sellerId}`);
   };
 
-  const handlePushToSellerProfile = (ownerId: number) => {
+  const handlePushToSellerProfile = (ownerId: string) => {
     router.push(`/(private)/seller-profile/${ownerId}`);
   };
 
-  const handleFavoriteButton = () => {
-    if (product) toggleFavorite(product);
+  const handleFavoriteButton = async () => {
+    if (!product) return;
+
+    const { data, error } = await supabase.rpc('toggle_favorite_product', {
+      _prod_id: product.id,
+    });
+
+    if (error) {
+      console.error("Error toggling favorite product:", error);
+      return;
+    }
+
+    setProduct({ ...product, favorite: data });
   };
 
   return (
@@ -58,17 +94,17 @@ export default function ProductDetailsScreen() {
         otherwise={<Text>Não foi possível encontrar este produto!</Text>}
       >
         <ScrollView style={styles.container}>
-          <ImageBackground source={product?.image} style={styles.header}>
+          <ImageBackground source={{ uri: getProductPhotoUrl(product?.photos[0]) }} style={styles.header}>
             <View style={styles.backdrop} />
             <BackButton />
           </ImageBackground>
 
           <View style={styles.content}>
             <View style={styles.productNameContainer}>
-              <Text style={styles.productName}>{product?.name}</Text>
+              <Text style={styles.productName}>{product?.title}</Text>
               <TouchableOpacity onPress={handleFavoriteButton}>
                 <MaterialIcons
-                  name={product && isFavorite(product.id) ? "favorite" : "favorite-border"}
+                  name={product?.favorite ? 'favorite' : "favorite-border"}
                   size={29}
                 />
               </TouchableOpacity>
@@ -79,10 +115,10 @@ export default function ProductDetailsScreen() {
               <Text style={styles.description}>{product?.description}</Text>
               <TouchableOpacity
                 onPress={() =>
-                  product?.ownerId && handlePushToSellerProfile(product.ownerId)
+                  product?.user_id && handlePushToSellerProfile(product.user_id)
                 }
               >
-                <Text style={styles.productOwner}>{product?.owner}</Text>
+                <Text style={styles.productOwner}>{product?.full_name}</Text>
               </TouchableOpacity>
             </View>
 
@@ -94,7 +130,7 @@ export default function ProductDetailsScreen() {
 
               <Button
                 style={styles.button}
-                onPress={() => product?.ownerId && handlePushToContact(product.ownerId)}
+                onPress={() => product?.user_id && handlePushToContact(product.user_id)}
               >
                 Contact seller
               </Button>

@@ -1,28 +1,77 @@
 import { ScrollView, StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import Container from "../../../../components/Container";
 import { useFavorites } from "../../../../contexts/FavoriteContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useRouter } from "expo-router";
+import { supabase } from "../../../../lib/supabase/supabase";
+import getProductPhotoUrl from "../../../../utils/getProductPhotoUrl";
 
-const categories = ["All", "Clothes", "Fridge", "Oven"];
+interface IFavorite {
+  product_id: string;
+  created_at: string;
+  updated_at: string;
+  user_id: string;
+  full_name: string;
+  title: string;
+  price: number;
+  description: string;
+  category: string;
+  type: string;
+  photos: string[];
+  state: string;
+  avg_rating: number;
+}
 
 export default function FavoritesTab() {
   const router = useRouter();
 
-  const { favorites } = useFavorites();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const navigation = useNavigation();
+
+  const [favorites, setFavorites] = useState<IFavorite[]>([]);
+
+  useEffect(() => {
+    async function fetchFavorites() {
+      const { data, error } = await supabase.rpc(`get_user_favorites`);
+
+      if (error) {
+        console.error("Error fetching favorites:", error);
+        return;
+      }
+
+      setFavorites(data);
+    }
+
+    fetchFavorites();
+  }, []);
 
   const filteredFavorites =
     selectedCategory === "All"
       ? favorites
       : favorites.filter((item) => item.category === selectedCategory);
 
-  const handleNavigateToProductsScreen = (productId: number) => {
+  const handleNavigateToProductsScreen = (productId: string) => {
     router.push(`/(private)/product-details/${productId}`);
   }
+
+  const categories = (() => {
+    if (!favorites.length) return [];
+
+    return favorites.reduce<string[]>(
+      (acc, cur) => {
+        const alreadyExists = acc.includes(cur.category);
+
+        if (!alreadyExists) {
+          acc.push(cur.category);
+        }
+
+        return acc;
+      },
+      []
+    );
+  })();
 
   return (
     <Container>
@@ -30,7 +79,7 @@ export default function FavoritesTab() {
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color="black" />
         </TouchableOpacity>
-        <Text style={styles.title}>My Wishlist</Text>
+        <Text style={styles.title}>Minha lista</Text>
       </View>
 
       <View style={styles.categoryContainer}>
@@ -41,7 +90,7 @@ export default function FavoritesTab() {
               styles.categoryButton,
               selectedCategory === category && styles.categoryButtonSelected,
             ]}
-            onPress={() => setSelectedCategory(category)}
+            onPress={() => setSelectedCategory(category === selectedCategory ? 'All' : category)}
           >
             <Text
               style={[
@@ -60,13 +109,13 @@ export default function FavoritesTab() {
           <Text style={styles.emptyText}>Nenhum produto favorito ainda.</Text>
         ) : (
           filteredFavorites.map((product) => (
-            <TouchableOpacity key={product.id} style={styles.card} onPress={() => handleNavigateToProductsScreen(product.id)}>
-              <Image source={product.image} style={styles.image} />
+            <TouchableOpacity key={product.product_id} style={styles.card} onPress={() => handleNavigateToProductsScreen(product.product_id)}>
+              <Image source={{ uri: getProductPhotoUrl(product?.photos[0]) }} style={styles.image} />
               <View style={styles.info}>
-                <Text style={styles.name}>{product.name}</Text>
+                <Text style={styles.name}>{product.title}</Text>
                 <View style={styles.ratingRow}>
                   <Text style={styles.star}>★</Text>
-                  <Text style={styles.rating}>5</Text>
+                  <Text style={styles.rating}>{product.avg_rating}</Text>
                 </View>
                 <Text style={styles.price}>R${product.price.toFixed(2)}/kg</Text>
               </View>

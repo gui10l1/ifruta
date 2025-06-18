@@ -21,10 +21,10 @@ const categories = [
 ]
 
 const searchFor = [
-  'Popular',
-  'Most Recent',
-  'Rate High',
-  'Price High',
+  { label: 'Populares', value: 'populares' },
+  { label: 'Mais recentes', value: 'recentes' },
+  { label: 'Preço alto', value: 'mais_caros' },
+  { label: 'Preço baixo', value: 'mais_baratos' },
 ]
 
 const ratings: Rating[] = [
@@ -53,11 +53,11 @@ const RailSelected = () => {
   return <View style={{ flex: 1, backgroundColor: '#D92525', height: 2 }} />
 }
 
-export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBottomSheetFilters) {
+export default function BottomSheetFilters({ shown, onClose, onConfirm, onReset }: IBottomSheetFilters) {
   const bottomSheetRef = useRef<BottomSheet>(null);
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedSearchFor, setSelectedSearchFor] = useState<string[]>([]);
+  const [selectedSearchFor, setSelectedSearchFor] = useState<string>('');
   const [selectedRating, setSelectedRating] = useState<Rating[]>([]);
   const [low, setLow] = useState(0);
   const [high, setHigh] = useState(100);
@@ -83,15 +83,7 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
   }
 
   const handleSearchForToggle = (searchFor: string) => {
-    const shouldExclude = selectedSearchFor.some(s => searchFor === s);
-
-    if (shouldExclude) {
-      setSelectedSearchFor(
-        selectedSearchFor.filter(s => s !== searchFor)
-      );
-    } else {
-      setSelectedSearchFor([...selectedSearchFor, searchFor]);
-    }
+    setSelectedSearchFor(searchFor);
   }
 
   const handleRatingToggle = (rating: Rating) => {
@@ -114,17 +106,12 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
   const handleResetFilters = () => {
     setSelectedCategories([]);
     setSelectedRating([]);
-    setSelectedSearchFor([]);
+    setSelectedSearchFor('');
     setHigh(100);
     setLow(0);
 
-    if (onConfirm) {
-      onConfirm({
-        categories: [],
-        priceRange: { max: 100, min: 0 },
-        ratings: [],
-        searchFor: [],
-      });
+    if (onReset) {
+      onReset();
     }
   }
 
@@ -196,7 +183,7 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
             <Slider
               min={0}
               max={100}
-              step={0.5}
+              step={1}
               high={high}
               low={low}
               renderRail={Rail}
@@ -208,17 +195,15 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
         </BottomSheetView>
 
         <BottomSheetView style={styles.section}>
-          <Text style={styles.sectionTitle}>Perquisar por</Text>
+          <Text style={styles.sectionTitle}>Organizar por</Text>
 
           <BottomSheetScrollView
             horizontal
             contentContainerStyle={styles.sectionList}
             showsHorizontalScrollIndicator={false}
           >
-            {searchFor.map(searchFor => {
-              const selected = selectedSearchFor.some(
-                s => s === searchFor,
-              );
+            {searchFor.map(({ label, value: searchFor }) => {
+              const selected = searchFor === selectedSearchFor;
 
               return (
                 <TouchableOpacity
@@ -229,7 +214,7 @@ export default function BottomSheetFilters({ shown, onClose, onConfirm }: IBotto
                   <Text
                     style={[styles.categoryButtonText, selected ? { color: 'white' } : {}]}
                   >
-                    {searchFor}
+                    {label}
                   </Text>
                 </TouchableOpacity>
               )
