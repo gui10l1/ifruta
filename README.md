@@ -91,3 +91,7 @@ Abaixo está um sumário de todos os fluxos possíveis e testados pelo time de d
 - Pedro Vinicius Silva Gomes de Souza - UC23201033
 - Guilherme Ribeiro Soares - uc21200089
 - GABRIEL VIEIRA FERREIRA - UC23100292
+
+# Vídeo de apresentação
+
+[Programação de App - iFruta - Grupo 4](https://www.youtube.com/watch?v=_HS33b5QFqs)
